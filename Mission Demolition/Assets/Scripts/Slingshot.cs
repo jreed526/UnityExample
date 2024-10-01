@@ -8,12 +8,14 @@ public class Slingshot : MonoBehaviour {
     public GameObject projectilePrefab;
     public float velocityMult = -10f;
     public GameObject projLinePrefab;
+    public GameObject projRubberBand;
 
     //fields set dynamically
     [Header("Dynamic")]
     public GameObject launchPoint;
     public Vector3 launchPos;
     public GameObject projectile;
+    private Rigidbody projectileRigidbody;
     public bool aimingMode;
 
     void Awake() {
@@ -41,6 +43,13 @@ public class Slingshot : MonoBehaviour {
         projectile.transform.position = launchPos;
         //Set it to isKinematic for now
         projectile.GetComponent<Rigidbody>().isKinematic = true;
+
+        //NEW
+        // Create the rubber band around projectile
+        projectileRigidbody = projectile.GetComponent<Rigidbody>();
+        projectileRigidbody.isKinematic = true; //Note already set by  getComponent
+        RubberBand.projectile = projectile;
+        
     }
 
     void Update() {
@@ -77,10 +86,10 @@ public class Slingshot : MonoBehaviour {
             FollowCam.SWITCH_VIEW(FollowCam.eView.slingshot);
             
             FollowCam.POI = projectile; // Set the _MainCamera POI
-            //Add a ProjectileLine to the Projectile
-            Instantiate<GameObject>(projLinePrefab, projectile.transform);
+
             projectile = null;
             MissionDemolition.SHOT_FIRED();
+            RubberBand.projectile = null;
         }
     }
 }
