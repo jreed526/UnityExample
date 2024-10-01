@@ -8,7 +8,6 @@ public class RubberBand : MonoBehaviour {
     public  GameObject leftArm;
     public  GameObject rightArm;
     public GameObject center;
-
     private LineRenderer band;
     void Awake() {
         band = GetComponent<LineRenderer>();

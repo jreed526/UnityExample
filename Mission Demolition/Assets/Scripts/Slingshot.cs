@@ -10,6 +10,9 @@ public class Slingshot : MonoBehaviour {
     public GameObject projLinePrefab;
     public GameObject projRubberBand;
 
+    // Add a reference for the AudioSource for the rubber band snapping sound
+    public AudioSource rubberBandSnapSound;
+
     //fields set dynamically
     [Header("Dynamic")]
     public GameObject launchPoint;
@@ -82,10 +85,17 @@ public class Slingshot : MonoBehaviour {
             projRB.collisionDetectionMode = CollisionDetectionMode.Continuous;
             projRB.velocity = -mouseDelta * velocityMult;
 
+            //Play the rubber band snapping sound
+            if (rubberBandSnapSound != null) {
+                rubberBandSnapSound.Play();
+            }
             //Switch to slingshot view immediately before setting POI
             FollowCam.SWITCH_VIEW(FollowCam.eView.slingshot);
             
             FollowCam.POI = projectile; // Set the _MainCamera POI
+
+            //Add a ProjectileLine to the Projectile
+            Instantiate<GameObject>(projLinePrefab, projectile.transform);
 
             projectile = null;
             MissionDemolition.SHOT_FIRED();
