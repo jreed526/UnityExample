@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(AudioSource))]
 public class Projectile : MonoBehaviour {
     const int LOOKBACK_COUNT = 10;
     static List<Projectile> PROJECTILES = new List<Projectile>();
@@ -18,8 +19,10 @@ public class Projectile : MonoBehaviour {
     //This private List stores the history of Projectile's move distance
     private List<float> deltas = new List<float>();
     private Rigidbody rigid;
+    private AudioSource audioSource;
     void Start() {
         rigid = GetComponent<Rigidbody>();
+        audioSource = GetComponent<AudioSource>();
         awake = true;
         prevPos = new Vector3(1000, 1000, 0);
         deltas.Add(1000);
@@ -52,7 +55,15 @@ public class Projectile : MonoBehaviour {
             rigid.Sleep();
         }
     }
-
+    void OnCollisionEnter(Collision collision) {
+        // Check if the object hit is tagged as "Wall" or "Slab"
+        if (collision.gameObject.tag == "Wall" || collision.gameObject.tag == "Slab") {
+            // Play the crashing sound
+            if (!audioSource.isPlaying) {
+                audioSource.Play();
+            }
+        }
+    }
     private void OnDestroy() {
         PROJECTILES.Remove(this);
     }
