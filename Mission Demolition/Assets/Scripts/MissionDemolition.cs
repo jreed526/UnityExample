@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public enum GameMode {
     idle,
@@ -84,11 +85,12 @@ public class MissionDemolition : MonoBehaviour {
     void NextLevel() {
         level++;
         if(level == levelMax) {
-            level = 0;
-            shotsTaken = 0;
-        }
+        // If all levels are cleared, load the Game Over scene
+        SceneManager.LoadScene("_Game_Over");
+    } else {
         StartLevel();
     }
+}
 
     //Static method that allows code anywhere to increment shotsTaken
     static public void SHOT_FIRED() {
